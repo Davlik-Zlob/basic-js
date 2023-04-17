@@ -14,29 +14,34 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 function transform(arr) {
-  throw new NotImplementedError('Not implemented');
-  // if (!Array.isArray(arr)) {
-  //   throw new Error('\'arr\' parameter must be an instance of the Array!');
-  // }
-  // let copyArr = [...arr];
-  // for (let i = 0; i < copyArr.length; i++) {
-  //   if (copyArr[i] === '--double-next' && copyArr[i+1] !== undefined) {
-  //     copyArr[i] = copyArr[i+1];
-  //   } else if (copyArr[i] === '--double-prev' && copyArr[i-1] !== undefined) {
-  //     copyArr[i] = copyArr[i-1];
-  //   } else if (copyArr[i] === '--discard-next' && copyArr[i+1] !== undefined) {
-  //     copyArr[i+1] = undefined;
-  //   } else if (copyArr[i] === '--discard-prev' && copyArr[i-1] !== undefined) {
-  //     copyArr[i-1] = undefined;
-  //   }
-  // }
-  // let result = [];
-  // copyArr.forEach(el => {
-  //   if (typeof el === 'number') {
-  //     result.push(el);
-  //   }
-  // })
-  // return result;
+  // throw new NotImplementedError('Not implemented');
+  if (!Array.isArray(arr)) {
+    throw new Error('\'arr\' parameter must be an instance of the Array!');
+  }
+  let newArr = [];
+  for (let i = 0; i < arr.length; i++) {
+    let cur = arr[i];
+    let next = arr[i + 1];
+    let prev = newArr[newArr.length - 1];
+    if (cur === '--discard-next') {
+      i++;
+    } else if (cur === '--double-next') {
+      if (next !== undefined) {
+        newArr.push(next);
+      }
+    } else if (cur === '--discard-prev') {
+      if (prev !== undefined && arr[i - 2] !== '--discard-next') {
+        newArr.pop();
+      }
+    } else if (cur === '--double-prev') {
+      if (prev !== undefined && arr[i - 2] !== '--discard-next') {
+        newArr.push(prev);
+      }
+    } else {
+      newArr.push(cur);
+    }
+  }
+  return newArr;
   // remove line with error and write your code here
 }
 
